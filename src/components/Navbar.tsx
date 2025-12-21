@@ -1,8 +1,16 @@
-import { Heart, PawPrint, Stethoscope, Search, GraduationCap, BookOpen, Menu, X } from "lucide-react";
+import { Heart, PawPrint, Stethoscope, Search, GraduationCap, BookOpen, Menu, X, User, LogOut, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { href: "/", label: "Home", icon: PawPrint },
@@ -18,6 +26,13 @@ const navItems = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, loading, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
@@ -56,12 +71,44 @@ const Navbar = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
-            <Button variant="hero" size="default">
-              Adopt Now
-            </Button>
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <User className="w-4 h-4" />
+                    <span className="max-w-[100px] truncate">
+                      {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/favorites" className="flex items-center gap-2 cursor-pointer">
+                      <Heart className="w-4 h-4" />
+                      My Favorites
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 cursor-pointer text-destructive">
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+            <Link to="/adoption">
+              <Button variant="hero" size="default">
+                Adopt Now
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -96,13 +143,47 @@ const Navbar = () => {
                   </Link>
                 );
               })}
+              {user && (
+                <Link
+                  to="/favorites"
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
+                    location.pathname === "/favorites"
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  <Heart className="w-5 h-5" />
+                  <span className="font-medium">My Favorites</span>
+                </Link>
+              )}
               <div className="flex gap-3 mt-4 pt-4 border-t border-border/50">
-                <Button variant="outline" className="flex-1">
-                  Sign In
-                </Button>
-                <Button variant="hero" className="flex-1">
-                  Adopt Now
-                </Button>
+                {user ? (
+                  <>
+                    <Button variant="outline" className="flex-1" onClick={handleSignOut}>
+                      Sign Out
+                    </Button>
+                    <Link to="/adoption" className="flex-1" onClick={() => setIsOpen(false)}>
+                      <Button variant="hero" className="w-full">
+                        Adopt Now
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth" className="flex-1" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/adoption" className="flex-1" onClick={() => setIsOpen(false)}>
+                      <Button variant="hero" className="w-full">
+                        Adopt Now
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
