@@ -1,8 +1,10 @@
-import { Heart, PawPrint, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Heart, PawPrint, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { toast } = useToast();
 
   const footerLinks = {
     services: [
@@ -14,25 +16,42 @@ const Footer = () => {
     ],
     company: [
       { label: "About Us", href: "/about" },
-      { label: "Our Mission", href: "/about#mission" },
-      { label: "Volunteer", href: "/volunteer" },
-      { label: "Donate", href: "/donate" },
-      { label: "Contact", href: "/contact" },
+      { label: "Our Mission", href: "/about" },
+      { label: "Volunteer", href: "/about" },
+      { label: "Donate", href: "/about" },
+      { label: "Contact", href: "/about" },
     ],
     resources: [
       { label: "Blog", href: "/blogs" },
       { label: "Pet Care Tips", href: "/blogs" },
-      { label: "FAQs", href: "/faqs" },
-      { label: "Success Stories", href: "/stories" },
+      { label: "FAQs", href: "/about" },
+      { label: "Success Stories", href: "/blogs" },
     ],
   };
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Youtube, href: "#", label: "Youtube" },
+    { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+    { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+    { icon: Youtube, href: "https://youtube.com", label: "Youtube" },
   ];
+
+  const handleSocialClick = (platform: string) => {
+    toast({
+      title: `Opening ${platform}`,
+      description: `Redirecting to our ${platform} page...`,
+    });
+  };
+
+  const handleContactClick = (type: string, value: string) => {
+    if (type === "phone") {
+      window.location.href = `tel:${value.replace(/[^0-9+]/g, '')}`;
+    } else if (type === "email") {
+      window.location.href = `mailto:${value}`;
+    } else if (type === "address") {
+      window.open(`https://maps.google.com/?q=${encodeURIComponent(value)}`, '_blank');
+    }
+  };
 
   return (
     <footer className="bg-foreground text-primary-foreground relative overflow-hidden">
@@ -49,8 +68,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-warm rounded-xl flex items-center justify-center">
+            <Link to="/" className="flex items-center gap-3 mb-6 group">
+              <div className="w-12 h-12 bg-gradient-warm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <PawPrint className="w-6 h-6 text-primary-foreground" />
               </div>
               <div className="flex flex-col">
@@ -62,18 +81,28 @@ const Footer = () => {
               Providing a safe haven for homeless and rescued animals, helping them find loving forever homes since 2020.
             </p>
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-primary-foreground/70">
+              <button 
+                onClick={() => handleContactClick("address", "123 Pet Street, Animal City, AC 12345")}
+                className="flex items-center gap-3 text-primary-foreground/70 hover:text-primary transition-colors group cursor-pointer"
+              >
                 <MapPin className="w-5 h-5 text-primary" />
-                <span>123 Pet Street, Animal City, AC 12345</span>
-              </div>
-              <div className="flex items-center gap-3 text-primary-foreground/70">
+                <span className="group-hover:underline">123 Pet Street, Animal City, AC 12345</span>
+                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <button 
+                onClick={() => handleContactClick("phone", "+1 (555) 123-4567")}
+                className="flex items-center gap-3 text-primary-foreground/70 hover:text-primary transition-colors group cursor-pointer"
+              >
                 <Phone className="w-5 h-5 text-primary" />
-                <span>+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center gap-3 text-primary-foreground/70">
+                <span className="group-hover:underline">+1 (555) 123-4567</span>
+              </button>
+              <button 
+                onClick={() => handleContactClick("email", "hello@snugglesanctuary.com")}
+                className="flex items-center gap-3 text-primary-foreground/70 hover:text-primary transition-colors group cursor-pointer"
+              >
                 <Mail className="w-5 h-5 text-primary" />
-                <span>hello@snugglesanctuary.com</span>
-              </div>
+                <span className="group-hover:underline">hello@snugglesanctuary.com</span>
+              </button>
             </div>
           </div>
 
@@ -85,7 +114,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300"
+                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -102,7 +131,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300"
+                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -119,7 +148,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300"
+                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -142,6 +171,9 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleSocialClick(social.label)}
                   aria-label={social.label}
                   className="w-10 h-10 rounded-xl bg-primary-foreground/10 flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300"
                 >
