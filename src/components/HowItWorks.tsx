@@ -1,4 +1,6 @@
-import { Search, Heart, Home, Sparkles } from "lucide-react";
+import { Search, Heart, Home, Sparkles, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const steps = [
   {
@@ -7,6 +9,7 @@ const steps = [
     title: "Browse & Search",
     description: "Explore our available pets or search for specific breeds. Filter by age, size, and personality.",
     color: "bg-primary",
+    href: "/adoption",
   },
   {
     icon: Heart,
@@ -14,6 +17,7 @@ const steps = [
     title: "Meet & Connect",
     description: "Schedule a visit to meet your potential companion. Our staff will help you find the perfect match.",
     color: "bg-accent",
+    href: "/adoption",
   },
   {
     icon: Sparkles,
@@ -21,6 +25,7 @@ const steps = [
     title: "Apply & Verify",
     description: "Complete our simple adoption application. We ensure pets go to loving, prepared homes.",
     color: "bg-success",
+    href: "/adoption",
   },
   {
     icon: Home,
@@ -28,6 +33,7 @@ const steps = [
     title: "Welcome Home",
     description: "Bring your new family member home! We provide ongoing support for a smooth transition.",
     color: "bg-secondary-foreground",
+    href: "/e-training",
   },
 ];
 
@@ -61,14 +67,15 @@ const HowItWorks = () => {
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
-                <div
+                <Link
                   key={step.step}
-                  className="relative group animate-fade-in"
+                  to={step.href}
+                  className="relative group animate-fade-in block"
                   style={{ animationDelay: `${index * 0.15}s` }}
                 >
-                  <div className="bg-card rounded-3xl p-8 shadow-soft hover:shadow-medium transition-all duration-500 hover:-translate-y-2 relative z-10">
+                  <div className="bg-card rounded-3xl p-8 shadow-soft hover:shadow-medium transition-all duration-500 hover:-translate-y-2 relative z-10 h-full">
                     {/* Step number */}
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-muted rounded-xl flex items-center justify-center font-heading font-bold text-muted-foreground shadow-soft">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-muted rounded-xl flex items-center justify-center font-heading font-bold text-muted-foreground shadow-soft group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       {step.step}
                     </div>
 
@@ -78,8 +85,14 @@ const HowItWorks = () => {
                     </div>
 
                     {/* Content */}
-                    <h3 className="font-heading text-xl font-bold mb-3">{step.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+                    <h3 className="font-heading text-xl font-bold mb-3 group-hover:text-primary transition-colors">{step.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed mb-4">{step.description}</p>
+                    
+                    {/* Learn more link */}
+                    <div className="flex items-center text-primary font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-sm">Learn More</span>
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
 
                   {/* Arrow (hidden on mobile and last item) */}
@@ -90,10 +103,21 @@ const HowItWorks = () => {
                       </svg>
                     </div>
                   )}
-                </div>
+                </Link>
               );
             })}
           </div>
+        </div>
+
+        {/* CTA Button */}
+        <div className="text-center mt-12">
+          <Link to="/adoption">
+            <Button variant="hero" size="xl" className="group shadow-medium">
+              <Heart className="w-5 h-5" />
+              Start Your Adoption Journey
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
