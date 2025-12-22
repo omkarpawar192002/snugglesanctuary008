@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Adoption from "./pages/Adoption";
@@ -20,27 +21,29 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/adoption" element={<Adoption />} />
-            <Route path="/rescue" element={<Rescue />} />
-            <Route path="/clinic" element={<Clinic />} />
-            <Route path="/lost-found" element={<LostFound />} />
-            <Route path="/e-training" element={<ETraining />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider defaultTheme="light" storageKey="snuggle-ui-theme">
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/adoption" element={<Adoption />} />
+              <Route path="/rescue" element={<Rescue />} />
+              <Route path="/clinic" element={<Clinic />} />
+              <Route path="/lost-found" element={<LostFound />} />
+              <Route path="/e-training" element={<ETraining />} />
+              <Route path="/blogs" element={<Blogs />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
