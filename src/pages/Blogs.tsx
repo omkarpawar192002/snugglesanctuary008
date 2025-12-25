@@ -1,79 +1,112 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, User, Heart, ArrowRight, Search } from "lucide-react";
+import { BookOpen, Clock, User, Heart, ArrowRight, Search, AlertTriangle, Shield } from "lucide-react";
 import { useState } from "react";
 
 const blogPosts = [
   {
     id: 1,
-    title: "10 Essential Tips for First-Time Pet Owners",
-    excerpt: "Welcoming a new pet into your home is exciting! Here are the essential things you need to know to give your new friend the best start.",
-    category: "Pet Care",
-    author: "Dr. Sarah Mitchell",
-    date: "Dec 18, 2025",
-    readTime: "5 min read",
-    image: "🐾",
-    likes: 234,
+    title: "How to Identify Venomous Snakes in Maharashtra",
+    excerpt: "Learn to identify the Big Four venomous snakes found in Pune and Maharashtra - Cobra, Krait, Russell's Viper, and Saw-scaled Viper. Know the key differences to stay safe.",
+    category: "Snake Safety",
+    author: "Dr. Rajesh Gokhale",
+    date: "Dec 24, 2025",
+    readTime: "8 min read",
+    image: "🐍",
+    likes: 456,
   },
   {
     id: 2,
-    title: "Understanding Your Dog's Body Language",
-    excerpt: "Learn to decode what your furry friend is trying to tell you through their posture, tail wagging, and facial expressions.",
-    category: "Dog Behavior",
-    author: "James Rodriguez",
-    date: "Dec 15, 2025",
-    readTime: "7 min read",
-    image: "🐕",
-    likes: 189,
+    title: "What to Do When You Encounter a Snake at Home",
+    excerpt: "Step-by-step guide on how to react when you find a snake in your house. Stay calm, keep distance, and call professional rescuers immediately.",
+    category: "Emergency Guide",
+    author: "Amit Sawant",
+    date: "Dec 22, 2025",
+    readTime: "6 min read",
+    image: "🏠",
+    likes: 389,
   },
   {
     id: 3,
-    title: "The Complete Guide to Cat Nutrition",
-    excerpt: "Everything you need to know about feeding your cat the right food for optimal health and longevity.",
-    category: "Cat Care",
-    author: "Emily Chen",
-    date: "Dec 12, 2025",
-    readTime: "8 min read",
-    image: "🐱",
-    likes: 156,
+    title: "Common Non-Venomous Snakes in Pune - Know Your Friends",
+    excerpt: "Not all snakes are dangerous! Learn about harmless snakes like Rat Snake, Wolf Snake, and Sand Boa that actually help control pests.",
+    category: "Snake Awareness",
+    author: "Wildlife Expert Team",
+    date: "Dec 20, 2025",
+    readTime: "7 min read",
+    image: "🌿",
+    likes: 278,
   },
   {
     id: 4,
-    title: "How to Safely Introduce Pets to Each Other",
-    excerpt: "Bringing a new pet home when you already have one? Follow these steps for a smooth introduction.",
-    category: "Pet Behavior",
-    author: "Dr. Michael Brown",
-    date: "Dec 10, 2025",
-    readTime: "6 min read",
-    image: "🐶🐱",
-    likes: 198,
+    title: "First Aid for Snake Bites - Every Second Counts",
+    excerpt: "Critical first aid steps for snake bite victims. What to do and what NOT to do before reaching the hospital. This knowledge can save lives.",
+    category: "Emergency Guide",
+    author: "Dr. Sneha Patil",
+    date: "Dec 18, 2025",
+    readTime: "10 min read",
+    image: "🏥",
+    likes: 512,
   },
   {
     id: 5,
-    title: "Common Venomous Snakes and What to Do",
-    excerpt: "Learn to identify dangerous snakes and the immediate steps to take if your pet encounters one.",
-    category: "Safety",
-    author: "Wildlife Expert Team",
-    date: "Dec 8, 2025",
-    readTime: "10 min read",
-    image: "🐍",
-    likes: 312,
+    title: "Monsoon Alert: Why Snakes Enter Homes During Rains",
+    excerpt: "Understand why snake sightings increase during monsoon season. Learn preventive measures to snake-proof your home naturally.",
+    category: "Prevention",
+    author: "Priya Kulkarni",
+    date: "Dec 15, 2025",
+    readTime: "5 min read",
+    image: "🌧️",
+    likes: 345,
   },
   {
     id: 6,
-    title: "Indoor vs Outdoor Cats: Making the Right Choice",
-    excerpt: "Weighing the pros and cons of letting your cat explore the outdoors versus keeping them safely inside.",
-    category: "Cat Care",
-    author: "Emily Chen",
-    date: "Dec 5, 2025",
+    title: "The Importance of Snake Rescue Over Killing",
+    excerpt: "Why killing snakes is illegal and harmful to ecosystem. Snakes control rodent population and maintain ecological balance. Always call a rescuer!",
+    category: "Conservation",
+    author: "Vikram Deshmukh",
+    date: "Dec 12, 2025",
     readTime: "6 min read",
-    image: "😺",
-    likes: 145,
+    image: "♻️",
+    likes: 423,
+  },
+  {
+    id: 7,
+    title: "Teaching Children About Snake Safety",
+    excerpt: "Age-appropriate ways to educate children about snakes without creating fear. Help kids understand these creatures and know how to stay safe.",
+    category: "Education",
+    author: "Anjali Joshi",
+    date: "Dec 10, 2025",
+    readTime: "5 min read",
+    image: "👨‍👩‍👧",
+    likes: 267,
+  },
+  {
+    id: 8,
+    title: "Snake-Proofing Your Garden and Compound",
+    excerpt: "Practical tips to make your outdoor spaces less attractive to snakes. From clearing debris to proper lighting - keep snakes away naturally.",
+    category: "Prevention",
+    author: "Landscape Expert Team",
+    date: "Dec 8, 2025",
+    readTime: "7 min read",
+    image: "🌳",
+    likes: 198,
+  },
+  {
+    id: 9,
+    title: "Myths vs Facts: Common Snake Misconceptions",
+    excerpt: "Debunking popular myths about snakes - from milk-drinking cobras to snake charmers. Learn the scientific truth behind these beliefs.",
+    category: "Education",
+    author: "Dr. Rajesh Gokhale",
+    date: "Dec 5, 2025",
+    readTime: "8 min read",
+    image: "❓",
+    likes: 356,
   },
 ];
 
-const categories = ["All", "Pet Care", "Dog Behavior", "Cat Care", "Safety", "Training"];
+const categories = ["All", "Snake Safety", "Emergency Guide", "Snake Awareness", "Prevention", "Conservation", "Education"];
 
 const Blogs = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -89,20 +122,28 @@ const Blogs = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-20">
+        {/* Emergency Banner */}
+        <section className="bg-destructive text-destructive-foreground py-3">
+          <div className="container mx-auto px-4 flex items-center justify-center gap-3 text-sm">
+            <AlertTriangle className="w-4 h-4" />
+            <span>Found a snake? Call our 24/7 rescue helpline: <strong>+91 20 2612 3456</strong></span>
+          </div>
+        </section>
+
         {/* Hero */}
         <section className="py-16 bg-gradient-hero relative overflow-hidden">
           <div className="absolute inset-0 bg-paw-pattern opacity-20" />
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <span className="inline-block px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-6">
-                <BookOpen className="w-4 h-4 inline mr-2" />
-                Pet Care Blog
+                <Shield className="w-4 h-4 inline mr-2" />
+                Snake Rescue Awareness
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Tips & <span className="text-gradient-warm">Stories</span>
+                Learn About <span className="text-gradient-warm">Snake Safety</span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Expert advice, heartwarming stories, and everything you need to know about pet care.
+                Expert guides on snake identification, safety measures, and why conservation matters. Stay informed, stay safe!
               </p>
               
               {/* Search */}
@@ -192,22 +233,44 @@ const Blogs = () => {
           </div>
         </section>
 
+        {/* Safety Tips Banner */}
+        <section className="py-16 bg-card">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto bg-gradient-warm rounded-3xl p-8 md:p-12 text-center">
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary-foreground mb-4">
+                Remember: Never Kill a Snake!
+              </h2>
+              <p className="text-primary-foreground/90 text-lg mb-6">
+                Snakes are protected under the Wildlife Protection Act. Killing them is illegal and punishable. 
+                Always call a professional rescuer who will safely relocate the snake.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="bg-background text-foreground hover:bg-background/90">
+                  <AlertTriangle className="w-5 h-5 mr-2" />
+                  Call Rescuer Now
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Newsletter */}
-        <section className="py-20 bg-gradient-warm">
+        <section className="py-20 bg-background">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
-              Get Weekly Pet Tips
+            <BookOpen className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+              Stay <span className="text-gradient-warm">Informed</span>
             </h2>
-            <p className="text-primary-foreground/90 text-lg mb-8 max-w-xl mx-auto">
-              Subscribe to our newsletter for the latest articles, tips, and heartwarming stories.
+            <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
+              Subscribe to receive the latest snake safety tips, rescue stories, and awareness updates.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-4 rounded-xl bg-primary-foreground text-foreground placeholder:text-muted-foreground focus:outline-none"
+                className="flex-1 px-6 py-4 rounded-xl bg-card border border-border focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <Button size="lg" className="bg-foreground text-primary-foreground hover:bg-foreground/90">
+              <Button size="lg" variant="hero">
                 Subscribe
               </Button>
             </div>
