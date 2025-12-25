@@ -1,4 +1,4 @@
-import { Heart, Search, Stethoscope, GraduationCap, Users, Shield, ArrowRight } from "lucide-react";
+import { Heart, Stethoscope, Users, Shield, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -10,14 +10,6 @@ const services = [
     href: "/adoption",
     color: "bg-primary/10 text-primary",
     accent: "group-hover:bg-primary",
-  },
-  {
-    icon: Search,
-    title: "Lost & Found",
-    description: "AI-powered pet matching to reunite lost pets with their families quickly and efficiently.",
-    href: "/lost-found",
-    color: "bg-accent/10 text-accent",
-    accent: "group-hover:bg-accent",
   },
   {
     icon: Shield,
@@ -34,14 +26,6 @@ const services = [
     href: "/clinic",
     color: "bg-secondary-foreground/10 text-secondary-foreground",
     accent: "group-hover:bg-secondary-foreground",
-  },
-  {
-    icon: GraduationCap,
-    title: "E-Training",
-    description: "Expert-led online courses to train your pets with positive reinforcement techniques.",
-    href: "/e-training",
-    color: "bg-warning/10 text-warning",
-    accent: "group-hover:bg-warning",
   },
   {
     icon: Users,
@@ -66,7 +50,7 @@ const Services = () => {
             Everything Your Pet <span className="text-gradient-warm">Needs</span>
           </h2>
           <p className="text-muted-foreground text-lg">
-            From adoption to training, we provide comprehensive services to ensure every animal finds happiness.
+            From adoption to rescue, we provide comprehensive services to ensure every animal finds happiness.
           </p>
         </div>
 
