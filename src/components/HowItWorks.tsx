@@ -33,7 +33,7 @@ const steps = [
     title: "Welcome Home",
     description: "Bring your new family member home! We provide ongoing support for a smooth transition.",
     color: "bg-secondary-foreground",
-    href: "/e-training",
+    href: "/adoption",
   },
 ];
 

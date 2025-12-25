@@ -1,4 +1,4 @@
-import { Heart, Search, ArrowRight, Sparkles } from "lucide-react";
+import { Heart, ArrowRight, Sparkles, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import heroPets from "@/assets/hero-pets.jpg";
@@ -54,10 +54,10 @@ const Hero = () => {
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/lost-found">
+              <Link to="/rescue">
                 <Button variant="outline" size="xl" className="w-full sm:w-auto border-2 hover:bg-secondary">
-                  <Search className="w-5 h-5" />
-                  Find Lost Pets
+                  <Shield className="w-5 h-5" />
+                  Report Rescue
                 </Button>
               </Link>
             </div>
@@ -119,11 +119,11 @@ const Hero = () => {
               <div className="absolute -right-6 bottom-1/3 glass-effect rounded-2xl p-4 shadow-card animate-float-delayed z-30">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
-                    <Search className="w-6 h-6 text-primary" />
+                    <Shield className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <div className="font-bold text-sm">Pet Found!</div>
-                    <div className="text-xs text-muted-foreground">Buddy reunited</div>
+                    <div className="font-bold text-sm">Pet Rescued!</div>
+                    <div className="text-xs text-muted-foreground">Buddy is safe</div>
                   </div>
                 </div>
               </div>

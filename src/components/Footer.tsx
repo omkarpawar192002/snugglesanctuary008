@@ -11,8 +11,6 @@ const Footer = () => {
       { label: "Pet Adoption", href: "/adoption" },
       { label: "Animal Rescue", href: "/rescue" },
       { label: "Vet Clinics", href: "/clinic" },
-      { label: "Lost & Found", href: "/lost-found" },
-      { label: "E-Training", href: "/e-training" },
     ],
     company: [
       { label: "About Us", href: "/about" },
