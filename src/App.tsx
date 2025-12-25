@@ -11,6 +11,7 @@ import Adoption from "./pages/Adoption";
 import Rescue from "./pages/Rescue";
 import Clinic from "./pages/Clinic";
 import Blogs from "./pages/Blogs";
+import BlogDetail from "./pages/BlogDetail";
 import Auth from "./pages/Auth";
 import Favorites from "./pages/Favorites";
 import Admin from "./pages/Admin";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/rescue" element={<Rescue />} />
               <Route path="/clinic" element={<Clinic />} />
               <Route path="/blogs" element={<Blogs />} />
+              <Route path="/blogs/:id" element={<BlogDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/admin" element={<Admin />} />

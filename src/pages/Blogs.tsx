@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -216,9 +217,11 @@ const Blogs = () => {
                         <span>{post.likes}</span>
                       </div>
                     </div>
-                    <Button variant="ghost" className="w-full mt-4 group-hover:bg-primary group-hover:text-primary-foreground">
-                      Read More
-                      <ArrowRight className="w-4 h-4" />
+                    <Button asChild variant="ghost" className="w-full mt-4 group-hover:bg-primary group-hover:text-primary-foreground">
+                      <Link to={`/blogs/${post.id}`}>
+                        Read More
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
                     </Button>
                   </div>
                 </article>
