@@ -1,18 +1,136 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Phone, MapPin, AlertTriangle, Clock, Shield, Heart, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Phone, MapPin, AlertTriangle, Shield, Heart, CheckCircle, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const emergencyTypes = [
-  { emoji: "🤕", title: "Injured Animal", description: "Report an animal that needs immediate medical attention" },
-  { emoji: "⛓️", title: "Trapped/Stuck", description: "Animal trapped in dangerous location or situation" },
-  { emoji: "🥵", title: "Heat Distress", description: "Animal left in hot car or suffering from heat" },
-  { emoji: "🐕", title: "Stray/Abandoned", description: "Homeless animal needing shelter and care" },
-  { emoji: "😢", title: "Abuse/Neglect", description: "Report suspected animal cruelty or neglect" },
-  { emoji: "🌊", title: "Natural Disaster", description: "Animal affected by floods, fires, or storms" },
+  { value: "injured", emoji: "🤕", title: "Injured Animal" },
+  { value: "trapped", emoji: "⛓️", title: "Trapped/Stuck" },
+  { value: "heat", emoji: "🥵", title: "Heat Distress" },
+  { value: "stray", emoji: "🐕", title: "Stray/Abandoned" },
+  { value: "abuse", emoji: "😢", title: "Abuse/Neglect" },
+  { value: "disaster", emoji: "🌊", title: "Natural Disaster" },
 ];
 
 const Rescue = () => {
+  const { toast } = useToast();
+  const { user, signOut } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [selectedType, setSelectedType] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    description: "",
+  });
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/rescue`,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!selectedType) {
+      toast({
+        title: "Select emergency type",
+        description: "Please select what type of emergency this is",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.location) {
+      toast({
+        title: "Location required",
+        description: "Please enter the location of the animal",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("rescue_requests").insert({
+        user_id: user?.id || null,
+        reporter_name: formData.name || (user?.user_metadata?.full_name) || "Anonymous",
+        reporter_email: formData.email || user?.email || "not-provided@anonymous.com",
+        reporter_phone: formData.phone || null,
+        emergency_type: selectedType,
+        location: formData.location,
+        description: formData.description || null,
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast({
+        title: "Report submitted!",
+        description: "Our rescue team will respond as soon as possible.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Submission failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-20 min-h-[80vh] flex items-center justify-center">
+          <div className="text-center p-8 max-w-md mx-auto">
+            <div className="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-success" />
+            </div>
+            <h1 className="font-heading text-3xl font-bold mb-4">Report Submitted!</h1>
+            <p className="text-muted-foreground mb-8">
+              Thank you for reporting. Our rescue team has been notified and will respond as quickly as possible.
+            </p>
+            <Button onClick={() => {
+              setSubmitted(false);
+              setSelectedType("");
+              setFormData({ name: "", email: "", phone: "", location: "", description: "" });
+            }}>
+              Submit Another Report
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -25,127 +143,176 @@ const Rescue = () => {
           </div>
         </section>
 
-        {/* Hero */}
-        <section className="py-20 bg-gradient-hero relative overflow-hidden">
+        {/* Simple Form Section */}
+        <section className="py-16 bg-gradient-hero relative overflow-hidden">
           <div className="absolute inset-0 bg-paw-pattern opacity-20" />
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <span className="inline-block px-4 py-2 bg-accent/10 text-accent text-sm font-semibold rounded-full mb-6">
-                <Shield className="w-4 h-4 inline mr-2" />
-                Animal Rescue Services
-              </span>
-              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Report an Animal in <span className="text-gradient-warm">Distress</span>
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                Our rescue team is available 24/7 to respond to animals in need. Every report matters.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Button variant="hero" size="xl">
-                  <AlertTriangle className="w-5 h-5" />
-                  Report Emergency
-                </Button>
-                <Button variant="outline" size="xl">
-                  <Phone className="w-5 h-5" />
-                  Call Rescue Team
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Emergency Types */}
-        <section className="py-20 bg-card">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
-                What Type of <span className="text-gradient-warm">Emergency?</span>
-              </h2>
-              <p className="text-muted-foreground">Select the situation that best describes the animal's condition</p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {emergencyTypes.map((type, index) => (
-                <button
-                  key={type.title}
-                  className="bg-background rounded-2xl p-6 text-left shadow-soft hover:shadow-medium transition-all duration-300 hover:-translate-y-1 group animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{type.emoji}</div>
-                  <h3 className="font-heading font-bold text-lg mb-2 group-hover:text-primary transition-colors">{type.title}</h3>
-                  <p className="text-muted-foreground text-sm">{type.description}</p>
-                  <div className="flex items-center text-primary mt-4 font-semibold text-sm">
-                    Report Now <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Response Times */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-                  Rapid Response, <span className="text-gradient-warm">Every Time</span>
-                </h2>
-                <p className="text-muted-foreground text-lg mb-8">
-                  Our trained rescue team is equipped to handle any situation. We prioritize calls based on urgency and dispatch the nearest available unit.
+            <div className="max-w-2xl mx-auto">
+              <div className="text-center mb-10">
+                <span className="inline-block px-4 py-2 bg-accent/10 text-accent text-sm font-semibold rounded-full mb-4">
+                  <Shield className="w-4 h-4 inline mr-2" />
+                  Quick Rescue Report
+                </span>
+                <h1 className="font-heading text-3xl md:text-4xl font-bold mb-4">
+                  Report an Animal in <span className="text-gradient-warm">Distress</span>
+                </h1>
+                <p className="text-muted-foreground">
+                  Fill this simple form and our rescue team will respond quickly
                 </p>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center shrink-0">
-                      <Clock className="w-6 h-6 text-destructive" />
+              </div>
+
+              {/* Google Sign In Option */}
+              <div className="bg-card rounded-2xl p-6 shadow-soft mb-6">
+                {user ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">{user.user_metadata?.full_name || user.email}</p>
+                        <p className="text-sm text-muted-foreground">Signed in with Google</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold mb-1">Critical Emergency: 15-30 mins</h4>
-                      <p className="text-muted-foreground text-sm">Life-threatening situations get immediate priority</p>
-                    </div>
+                    <Button variant="outline" size="sm" onClick={signOut}>
+                      Sign Out
+                    </Button>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-warning/10 rounded-xl flex items-center justify-center shrink-0">
-                      <Clock className="w-6 h-6 text-warning" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-1">Urgent: 1-2 hours</h4>
-                      <p className="text-muted-foreground text-sm">Non-life-threatening but needs prompt attention</p>
-                    </div>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-muted-foreground mb-4">Sign in to track your reports</p>
+                    <Button 
+                      variant="outline" 
+                      onClick={handleGoogleSignIn}
+                      disabled={googleLoading}
+                      className="gap-2"
+                    >
+                      {googleLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <svg className="w-5 h-5" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                      )}
+                      Continue with Google
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-3">Or continue without signing in</p>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center shrink-0">
-                      <Clock className="w-6 h-6 text-success" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-1">Standard: Same day</h4>
-                      <p className="text-muted-foreground text-sm">Animal is safe but needs rescue assistance</p>
-                    </div>
+                )}
+              </div>
+
+              {/* Rescue Form */}
+              <form onSubmit={handleSubmit} className="bg-card rounded-2xl p-6 shadow-soft space-y-6">
+                {/* Emergency Type Selection */}
+                <div>
+                  <label className="block font-semibold mb-3">What's the emergency? *</label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {emergencyTypes.map((type) => (
+                      <button
+                        key={type.value}
+                        type="button"
+                        onClick={() => setSelectedType(type.value)}
+                        className={`p-4 rounded-xl border-2 text-center transition-all ${
+                          selectedType === type.value
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:border-primary/50"
+                        }`}
+                      >
+                        <div className="text-3xl mb-2">{type.emoji}</div>
+                        <div className="text-sm font-medium">{type.title}</div>
+                      </button>
+                    ))}
                   </div>
                 </div>
-              </div>
-              <div className="bg-gradient-warm rounded-3xl p-12 text-center text-primary-foreground">
-                <div className="text-8xl mb-4">🚑</div>
-                <h3 className="font-heading text-2xl font-bold mb-2">500+ Rescues This Year</h3>
-                <p className="text-primary-foreground/80">Our team has saved hundreds of lives</p>
-              </div>
+
+                {/* Location */}
+                <div>
+                  <label className="block font-semibold mb-2">
+                    <MapPin className="w-4 h-4 inline mr-2" />
+                    Location *
+                  </label>
+                  <Input
+                    placeholder="Enter address or landmark"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    required
+                  />
+                </div>
+
+                {/* Contact Info - Only show if not signed in */}
+                {!user && (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-semibold mb-2">Your Name</label>
+                      <Input
+                        placeholder="Optional"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold mb-2">Phone</label>
+                      <Input
+                        type="tel"
+                        placeholder="For updates"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Description */}
+                <div>
+                  <label className="block font-semibold mb-2">Additional Details</label>
+                  <Textarea
+                    placeholder="Describe the animal's condition (optional)"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                  />
+                </div>
+
+                {/* Submit */}
+                <Button 
+                  type="submit" 
+                  variant="hero" 
+                  size="xl" 
+                  className="w-full"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <AlertTriangle className="w-5 h-5" />
+                  )}
+                  Submit Rescue Report
+                </Button>
+              </form>
             </div>
           </div>
         </section>
 
-        {/* Volunteer */}
-        <section className="py-20 bg-gradient-warm">
-          <div className="container mx-auto px-4 text-center">
-            <Heart className="w-16 h-16 text-primary-foreground mx-auto mb-6" />
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
-              Join Our Rescue Team
-            </h2>
-            <p className="text-primary-foreground/90 text-xl mb-8 max-w-2xl mx-auto">
-              Become a volunteer rescuer and help save animal lives in your community.
-            </p>
-            <Button size="xl" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
-              Apply to Volunteer
-              <ArrowRight className="w-5 h-5" />
-            </Button>
+        {/* Quick Stats */}
+        <section className="py-12 bg-card">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto text-center">
+              <div>
+                <div className="font-heading text-3xl font-bold text-gradient-warm">24/7</div>
+                <div className="text-muted-foreground text-sm">Available</div>
+              </div>
+              <div>
+                <div className="font-heading text-3xl font-bold text-gradient-warm">15 min</div>
+                <div className="text-muted-foreground text-sm">Avg Response</div>
+              </div>
+              <div>
+                <div className="font-heading text-3xl font-bold text-gradient-warm">500+</div>
+                <div className="text-muted-foreground text-sm">Rescues</div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
