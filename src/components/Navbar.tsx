@@ -1,9 +1,10 @@
-import { Heart, PawPrint, Stethoscope, Search, GraduationCap, BookOpen, Menu, X, User, LogOut, Loader2, Moon, Sun } from "lucide-react";
+import { Heart, PawPrint, Stethoscope, Search, GraduationCap, BookOpen, Menu, X, User, LogOut, Loader2, Shield } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
@@ -29,6 +30,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
 
   const handleSignOut = async () => {
     await signOut();
@@ -92,6 +94,17 @@ const Navbar = () => {
                       My Favorites
                     </Link>
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="flex items-center gap-2 cursor-pointer text-primary">
+                          <Shield className="w-4 h-4" />
+                          Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 cursor-pointer text-destructive">
                     <LogOut className="w-4 h-4" />
@@ -146,19 +159,36 @@ const Navbar = () => {
                 );
               })}
               {user && (
-                <Link
-                  to="/favorites"
-                  onClick={() => setIsOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
-                    location.pathname === "/favorites"
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                <>
+                  <Link
+                    to="/favorites"
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
+                      location.pathname === "/favorites"
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <Heart className="w-5 h-5" />
+                    <span className="font-medium">My Favorites</span>
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
+                        location.pathname === "/admin"
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                    >
+                      <Shield className="w-5 h-5" />
+                      <span className="font-medium">Admin Dashboard</span>
+                    </Link>
                   )}
-                >
-                  <Heart className="w-5 h-5" />
-                  <span className="font-medium">My Favorites</span>
-                </Link>
+                </>
               )}
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
                 <ThemeToggle />
