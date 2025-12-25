@@ -140,6 +140,48 @@ export type Database = {
         }
         Relationships: []
       }
+      rescue_requests: {
+        Row: {
+          created_at: string
+          description: string | null
+          emergency_type: string
+          id: string
+          location: string
+          reporter_email: string
+          reporter_name: string
+          reporter_phone: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          emergency_type: string
+          id?: string
+          location: string
+          reporter_email: string
+          reporter_name: string
+          reporter_phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          emergency_type?: string
+          id?: string
+          location?: string
+          reporter_email?: string
+          reporter_name?: string
+          reporter_phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
