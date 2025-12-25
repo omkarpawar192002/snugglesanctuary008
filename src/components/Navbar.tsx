@@ -20,7 +20,6 @@ const navItems = [
   { href: "/adoption", label: "Adoption", icon: Heart },
   { href: "/rescue", label: "Rescue", icon: Search },
   { href: "/clinic", label: "Vet Clinics", icon: Stethoscope },
-  { href: "/lost-found", label: "Lost & Found", icon: Search },
   { href: "/e-training", label: "E-Training", icon: GraduationCap },
   { href: "/blogs", label: "Blogs", icon: BookOpen },
 ];
