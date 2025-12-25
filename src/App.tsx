@@ -24,10 +24,10 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="light" storageKey="snuggle-ui-theme">
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <Toaster />
+            <Sonner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
