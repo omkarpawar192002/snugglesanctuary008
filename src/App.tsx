@@ -10,7 +10,6 @@ import About from "./pages/About";
 import Adoption from "./pages/Adoption";
 import Rescue from "./pages/Rescue";
 import Clinic from "./pages/Clinic";
-import ETraining from "./pages/ETraining";
 import Blogs from "./pages/Blogs";
 import Auth from "./pages/Auth";
 import Favorites from "./pages/Favorites";
@@ -33,7 +32,6 @@ const App = () => (
               <Route path="/adoption" element={<Adoption />} />
               <Route path="/rescue" element={<Rescue />} />
               <Route path="/clinic" element={<Clinic />} />
-              <Route path="/e-training" element={<ETraining />} />
               <Route path="/blogs" element={<Blogs />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/favorites" element={<Favorites />} />

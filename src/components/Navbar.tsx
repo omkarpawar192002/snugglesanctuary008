@@ -1,4 +1,4 @@
-import { Heart, PawPrint, Stethoscope, Search, GraduationCap, BookOpen, Menu, X, User, LogOut, Loader2, Shield } from "lucide-react";
+import { Heart, PawPrint, Stethoscope, Search, BookOpen, Menu, X, User, LogOut, Loader2, Shield } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,6 @@ const navItems = [
   { href: "/adoption", label: "Adoption", icon: Heart },
   { href: "/rescue", label: "Rescue", icon: Search },
   { href: "/clinic", label: "Vet Clinics", icon: Stethoscope },
-  { href: "/e-training", label: "E-Training", icon: GraduationCap },
   { href: "/blogs", label: "Blogs", icon: BookOpen },
 ];
 
