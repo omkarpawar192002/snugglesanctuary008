@@ -5,6 +5,16 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Clock, User, Heart, ArrowRight, Search, AlertTriangle, Shield } from "lucide-react";
 import { useState } from "react";
 
+import snakeRescueBasics from "@/assets/blogs/snake-rescue-basics.jpg";
+import venomousSnakesIndia from "@/assets/blogs/venomous-snakes-india.jpg";
+import snakeEncounter from "@/assets/blogs/snake-encounter.jpg";
+import snakebiteFirstAid from "@/assets/blogs/snakebite-first-aid.jpg";
+import nonVenomousSnakes from "@/assets/blogs/non-venomous-snakes.jpg";
+import monsoonSnakes from "@/assets/blogs/monsoon-snakes.jpg";
+import snakeRelease from "@/assets/blogs/snake-release.jpg";
+import snakePrevention from "@/assets/blogs/snake-prevention.jpg";
+import snakeConservation from "@/assets/blogs/snake-conservation.jpg";
+
 const blogPosts = [
   {
     id: 1,
@@ -14,7 +24,7 @@ const blogPosts = [
     author: "Dr. Rajesh Gokhale",
     date: "Dec 24, 2025",
     readTime: "8 min read",
-    image: "🐍",
+    image: venomousSnakesIndia,
     likes: 456,
   },
   {
@@ -25,7 +35,7 @@ const blogPosts = [
     author: "Amit Sawant",
     date: "Dec 22, 2025",
     readTime: "6 min read",
-    image: "🏠",
+    image: snakeEncounter,
     likes: 389,
   },
   {
@@ -36,7 +46,7 @@ const blogPosts = [
     author: "Wildlife Expert Team",
     date: "Dec 20, 2025",
     readTime: "7 min read",
-    image: "🌿",
+    image: nonVenomousSnakes,
     likes: 278,
   },
   {
@@ -47,7 +57,7 @@ const blogPosts = [
     author: "Dr. Sneha Patil",
     date: "Dec 18, 2025",
     readTime: "10 min read",
-    image: "🏥",
+    image: snakebiteFirstAid,
     likes: 512,
   },
   {
@@ -58,7 +68,7 @@ const blogPosts = [
     author: "Priya Kulkarni",
     date: "Dec 15, 2025",
     readTime: "5 min read",
-    image: "🌧️",
+    image: monsoonSnakes,
     likes: 345,
   },
   {
@@ -69,7 +79,7 @@ const blogPosts = [
     author: "Vikram Deshmukh",
     date: "Dec 12, 2025",
     readTime: "6 min read",
-    image: "♻️",
+    image: snakeRelease,
     likes: 423,
   },
   {
@@ -80,7 +90,7 @@ const blogPosts = [
     author: "Anjali Joshi",
     date: "Dec 10, 2025",
     readTime: "5 min read",
-    image: "👨‍👩‍👧",
+    image: snakeRescueBasics,
     likes: 267,
   },
   {
@@ -91,7 +101,7 @@ const blogPosts = [
     author: "Landscape Expert Team",
     date: "Dec 8, 2025",
     readTime: "7 min read",
-    image: "🌳",
+    image: snakePrevention,
     likes: 198,
   },
   {
@@ -102,7 +112,7 @@ const blogPosts = [
     author: "Dr. Rajesh Gokhale",
     date: "Dec 5, 2025",
     readTime: "8 min read",
-    image: "❓",
+    image: snakeConservation,
     likes: 356,
   },
 ];
@@ -193,8 +203,12 @@ const Blogs = () => {
                   className="bg-card rounded-3xl overflow-hidden shadow-soft hover:shadow-medium transition-all duration-300 group animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="h-48 bg-muted flex items-center justify-center">
-                    <span className="text-7xl group-hover:scale-110 transition-transform duration-500">{post.image}</span>
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src={post.image} 
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
