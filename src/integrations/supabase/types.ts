@@ -59,6 +59,51 @@ export type Database = {
         }
         Relationships: []
       }
+      clinic_appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          clinic_name: string
+          created_at: string
+          email: string | null
+          id: string
+          patient_name: string
+          phone: string
+          reason: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          clinic_name: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          patient_name: string
+          phone: string
+          reason?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          clinic_name?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          patient_name?: string
+          phone?: string
+          reason?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string

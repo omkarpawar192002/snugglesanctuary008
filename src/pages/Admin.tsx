@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, Users, Mail, Clock, CheckCircle, XCircle, AlertCircle, Shield } from 'lucide-react';
+import { Heart, Users, Mail, Clock, CheckCircle, XCircle, AlertCircle, Shield, Calendar } from 'lucide-react';
 
 interface AdoptionRequest {
   id: string;
@@ -43,6 +43,19 @@ interface Subscription {
   created_at: string;
 }
 
+interface ClinicAppointment {
+  id: string;
+  clinic_name: string;
+  patient_name: string;
+  email: string | null;
+  phone: string;
+  appointment_date: string;
+  appointment_time: string;
+  reason: string | null;
+  status: string;
+  created_at: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -52,6 +65,7 @@ const Admin = () => {
   const [adoptionRequests, setAdoptionRequests] = useState<AdoptionRequest[]>([]);
   const [volunteerRequests, setVolunteerRequests] = useState<VolunteerRequest[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [clinicAppointments, setClinicAppointments] = useState<ClinicAppointment[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
@@ -80,15 +94,17 @@ const Admin = () => {
   const fetchAllData = async () => {
     setLoadingData(true);
     try {
-      const [adoptionRes, volunteerRes, subscriptionRes] = await Promise.all([
+      const [adoptionRes, volunteerRes, subscriptionRes, appointmentsRes] = await Promise.all([
         supabase.from('adoption_requests').select('*').order('created_at', { ascending: false }),
         supabase.from('volunteer_requests').select('*').order('created_at', { ascending: false }),
-        supabase.from('newsletter_subscriptions').select('*').order('created_at', { ascending: false })
+        supabase.from('newsletter_subscriptions').select('*').order('created_at', { ascending: false }),
+        supabase.from('clinic_appointments').select('*').order('created_at', { ascending: false })
       ]);
 
       if (adoptionRes.data) setAdoptionRequests(adoptionRes.data);
       if (volunteerRes.data) setVolunteerRequests(volunteerRes.data);
       if (subscriptionRes.data) setSubscriptions(subscriptionRes.data);
+      if (appointmentsRes.data) setClinicAppointments(appointmentsRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -120,6 +136,20 @@ const Admin = () => {
       toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
     } else {
       toast({ title: "Success", description: "Volunteer request status updated" });
+      fetchAllData();
+    }
+  };
+
+  const updateAppointmentStatus = async (id: string, status: string) => {
+    const { error } = await supabase
+      .from('clinic_appointments')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: "Appointment status updated" });
       fetchAllData();
     }
   };
@@ -167,7 +197,7 @@ const Admin = () => {
       {/* Stats Overview */}
       <section className="py-8 border-b border-border">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <Card className="bg-card border-primary/20">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="p-3 rounded-full bg-primary/10">
@@ -175,7 +205,7 @@ const Admin = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">{adoptionRequests.length}</p>
-                  <p className="text-sm text-muted-foreground">Adoption Requests</p>
+                  <p className="text-sm text-muted-foreground">Adoptions</p>
                 </div>
               </CardContent>
             </Card>
@@ -186,7 +216,18 @@ const Admin = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">{volunteerRequests.length}</p>
-                  <p className="text-sm text-muted-foreground">Volunteer Requests</p>
+                  <p className="text-sm text-muted-foreground">Volunteers</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-card border-warning/20">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="p-3 rounded-full bg-warning/10">
+                  <Calendar className="w-6 h-6 text-warning" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{clinicAppointments.length}</p>
+                  <p className="text-sm text-muted-foreground">Appointments</p>
                 </div>
               </CardContent>
             </Card>
@@ -197,7 +238,7 @@ const Admin = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">{subscriptions.length}</p>
-                  <p className="text-sm text-muted-foreground">Subscriptions</p>
+                  <p className="text-sm text-muted-foreground">Subscribers</p>
                 </div>
               </CardContent>
             </Card>
@@ -209,15 +250,18 @@ const Admin = () => {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="adoptions" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="adoptions" className="flex items-center gap-2">
                 <Heart className="w-4 h-4" /> Adoptions
               </TabsTrigger>
               <TabsTrigger value="volunteers" className="flex items-center gap-2">
                 <Users className="w-4 h-4" /> Volunteers
               </TabsTrigger>
+              <TabsTrigger value="appointments" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" /> Appointments
+              </TabsTrigger>
               <TabsTrigger value="subscriptions" className="flex items-center gap-2">
-                <Mail className="w-4 h-4" /> Subscriptions
+                <Mail className="w-4 h-4" /> Subscribers
               </TabsTrigger>
             </TabsList>
 
@@ -343,6 +387,73 @@ const Admin = () => {
                                     <SelectItem value="pending">Pending</SelectItem>
                                     <SelectItem value="approved">Approved</SelectItem>
                                     <SelectItem value="rejected">Rejected</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Clinic Appointments Tab */}
+            <TabsContent value="appointments">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Clinic Appointments</CardTitle>
+                  <CardDescription>Manage veterinary clinic appointment bookings</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {loadingData ? (
+                    <div className="text-center py-8">Loading...</div>
+                  ) : clinicAppointments.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>No clinic appointments yet</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {clinicAppointments.map((appointment) => (
+                        <Card key={appointment.id} className="bg-muted/30">
+                          <CardContent className="p-4">
+                            <div className="flex flex-col md:flex-row gap-4 justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h3 className="font-semibold text-foreground">{appointment.patient_name}</h3>
+                                  {getStatusBadge(appointment.status)}
+                                </div>
+                                <p className="text-sm text-muted-foreground">Clinic: {appointment.clinic_name}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Date: {new Date(appointment.appointment_date).toLocaleDateString()} at {appointment.appointment_time}
+                                </p>
+                                <p className="text-sm text-muted-foreground">Phone: {appointment.phone}</p>
+                                {appointment.email && (
+                                  <p className="text-sm text-muted-foreground">Email: {appointment.email}</p>
+                                )}
+                                {appointment.reason && (
+                                  <p className="text-sm text-muted-foreground mt-2">Reason: {appointment.reason}</p>
+                                )}
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  Booked: {new Date(appointment.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div className="flex items-start">
+                                <Select 
+                                  value={appointment.status} 
+                                  onValueChange={(value) => updateAppointmentStatus(appointment.id, value)}
+                                >
+                                  <SelectTrigger className="w-32">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                                    <SelectItem value="completed">Completed</SelectItem>
+                                    <SelectItem value="cancelled">Cancelled</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>

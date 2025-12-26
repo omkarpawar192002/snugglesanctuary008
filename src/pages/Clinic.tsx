@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Star, Clock, Stethoscope, Shield, Calendar, ArrowRight, CheckCircle, Loader2, User, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const clinics = [
   {
@@ -56,6 +58,7 @@ const clinics = [
 
 const Clinic = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [selectedClinic, setSelectedClinic] = useState<typeof clinics[0] | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -87,15 +90,35 @@ const Clinic = () => {
 
     setLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setLoading(false);
-    setSubmitted(true);
-    toast({
-      title: "Appointment Booked!",
-      description: `Your appointment at ${selectedClinic?.name} is confirmed.`,
-    });
+    try {
+      const { error } = await supabase.from("clinic_appointments").insert({
+        user_id: user?.id || null,
+        clinic_name: selectedClinic?.name || "",
+        patient_name: formData.name,
+        email: formData.email || null,
+        phone: formData.phone,
+        appointment_date: formData.date,
+        appointment_time: formData.time,
+        reason: formData.reason || null,
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast({
+        title: "Appointment Booked!",
+        description: `Your appointment at ${selectedClinic?.name} is confirmed.`,
+      });
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      toast({
+        title: "Booking Failed",
+        description: "There was an error booking your appointment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
