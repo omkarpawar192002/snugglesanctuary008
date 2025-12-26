@@ -88,8 +88,76 @@ const Admin = () => {
   useEffect(() => {
     if (isAdmin) {
       fetchAllData();
+
+      // Set up realtime subscriptions
+      const adoptionChannel = supabase
+        .channel('admin-adoptions')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'adoption_requests' }, (payload) => {
+          console.log('Adoption change:', payload);
+          if (payload.eventType === 'INSERT') {
+            setAdoptionRequests(prev => [payload.new as AdoptionRequest, ...prev]);
+            toast({ title: "New Adoption Request", description: `${(payload.new as AdoptionRequest).applicant_name} submitted an application` });
+          } else if (payload.eventType === 'UPDATE') {
+            setAdoptionRequests(prev => prev.map(r => r.id === payload.new.id ? payload.new as AdoptionRequest : r));
+          } else if (payload.eventType === 'DELETE') {
+            setAdoptionRequests(prev => prev.filter(r => r.id !== payload.old.id));
+          }
+        })
+        .subscribe();
+
+      const volunteerChannel = supabase
+        .channel('admin-volunteers')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'volunteer_requests' }, (payload) => {
+          console.log('Volunteer change:', payload);
+          if (payload.eventType === 'INSERT') {
+            setVolunteerRequests(prev => [payload.new as VolunteerRequest, ...prev]);
+            toast({ title: "New Volunteer Application", description: `${(payload.new as VolunteerRequest).name} wants to volunteer` });
+          } else if (payload.eventType === 'UPDATE') {
+            setVolunteerRequests(prev => prev.map(r => r.id === payload.new.id ? payload.new as VolunteerRequest : r));
+          } else if (payload.eventType === 'DELETE') {
+            setVolunteerRequests(prev => prev.filter(r => r.id !== payload.old.id));
+          }
+        })
+        .subscribe();
+
+      const subscriptionChannel = supabase
+        .channel('admin-subscriptions')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'newsletter_subscriptions' }, (payload) => {
+          console.log('Subscription change:', payload);
+          if (payload.eventType === 'INSERT') {
+            setSubscriptions(prev => [payload.new as Subscription, ...prev]);
+            toast({ title: "New Subscriber", description: `${(payload.new as Subscription).email} subscribed` });
+          } else if (payload.eventType === 'UPDATE') {
+            setSubscriptions(prev => prev.map(s => s.id === payload.new.id ? payload.new as Subscription : s));
+          } else if (payload.eventType === 'DELETE') {
+            setSubscriptions(prev => prev.filter(s => s.id !== payload.old.id));
+          }
+        })
+        .subscribe();
+
+      const appointmentChannel = supabase
+        .channel('admin-appointments')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'clinic_appointments' }, (payload) => {
+          console.log('Appointment change:', payload);
+          if (payload.eventType === 'INSERT') {
+            setClinicAppointments(prev => [payload.new as ClinicAppointment, ...prev]);
+            toast({ title: "New Appointment", description: `${(payload.new as ClinicAppointment).patient_name} booked an appointment` });
+          } else if (payload.eventType === 'UPDATE') {
+            setClinicAppointments(prev => prev.map(a => a.id === payload.new.id ? payload.new as ClinicAppointment : a));
+          } else if (payload.eventType === 'DELETE') {
+            setClinicAppointments(prev => prev.filter(a => a.id !== payload.old.id));
+          }
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(adoptionChannel);
+        supabase.removeChannel(volunteerChannel);
+        supabase.removeChannel(subscriptionChannel);
+        supabase.removeChannel(appointmentChannel);
+      };
     }
-  }, [isAdmin]);
+  }, [isAdmin, toast]);
 
   const fetchAllData = async () => {
     setLoadingData(true);
