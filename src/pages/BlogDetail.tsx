@@ -4,6 +4,16 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, User, Heart, Calendar, AlertTriangle, Share2 } from "lucide-react";
 
+import snakeRescueBasics from "@/assets/blogs/snake-rescue-basics.jpg";
+import venomousSnakesIndia from "@/assets/blogs/venomous-snakes-india.jpg";
+import snakeEncounter from "@/assets/blogs/snake-encounter.jpg";
+import snakebiteFirstAid from "@/assets/blogs/snakebite-first-aid.jpg";
+import nonVenomousSnakes from "@/assets/blogs/non-venomous-snakes.jpg";
+import monsoonSnakes from "@/assets/blogs/monsoon-snakes.jpg";
+import snakeRelease from "@/assets/blogs/snake-release.jpg";
+import snakePrevention from "@/assets/blogs/snake-prevention.jpg";
+import snakeConservation from "@/assets/blogs/snake-conservation.jpg";
+
 const blogData: Record<string, {
   title: string;
   category: string;
@@ -20,7 +30,7 @@ const blogData: Record<string, {
     author: "Dr. Rajesh Gokhale",
     date: "Dec 24, 2025",
     readTime: "8 min read",
-    image: "🐍",
+    image: venomousSnakesIndia,
     likes: 456,
     content: [
       "Maharashtra is home to the 'Big Four' venomous snakes that are responsible for most snakebite fatalities in India. Understanding how to identify these snakes can be life-saving.",
@@ -61,7 +71,7 @@ const blogData: Record<string, {
     author: "Amit Sawant",
     date: "Dec 22, 2025",
     readTime: "6 min read",
-    image: "🏠",
+    image: snakeEncounter,
     likes: 389,
     content: [
       "Finding a snake in your home can be frightening, but staying calm and following the right steps can ensure everyone's safety - including the snake's.",
@@ -104,7 +114,7 @@ const blogData: Record<string, {
     author: "Wildlife Expert Team",
     date: "Dec 20, 2025",
     readTime: "7 min read",
-    image: "🌿",
+    image: nonVenomousSnakes,
     likes: 278,
     content: [
       "Not all snakes are dangerous! In fact, most snakes you'll encounter in Pune are harmless and actually beneficial. They help control rodent and pest populations.",
@@ -151,7 +161,7 @@ const blogData: Record<string, {
     author: "Dr. Sneha Patil",
     date: "Dec 18, 2025",
     readTime: "10 min read",
-    image: "🏥",
+    image: snakebiteFirstAid,
     likes: 512,
     content: [
       "Snake bite is a medical emergency. Knowing the correct first aid can save lives. This guide covers what to do AND what NOT to do.",
@@ -201,7 +211,7 @@ const blogData: Record<string, {
     author: "Priya Kulkarni",
     date: "Dec 15, 2025",
     readTime: "5 min read",
-    image: "🌧️",
+    image: monsoonSnakes,
     likes: 345,
     content: [
       "Every monsoon, snake sightings in homes increase dramatically. Understanding why this happens helps us coexist safely with these creatures.",
@@ -253,7 +263,7 @@ const blogData: Record<string, {
     author: "Vikram Deshmukh",
     date: "Dec 12, 2025",
     readTime: "6 min read",
-    image: "♻️",
+    image: snakeRelease,
     likes: 423,
     content: [
       "Every year, thousands of snakes are killed out of fear. But did you know that killing snakes is not only harmful to our ecosystem but also illegal?",
@@ -311,7 +321,7 @@ const blogData: Record<string, {
     author: "Anjali Joshi",
     date: "Dec 10, 2025",
     readTime: "5 min read",
-    image: "👨‍👩‍👧",
+    image: snakeRescueBasics,
     likes: 267,
     content: [
       "Children are naturally curious, and teaching them about snake safety is crucial - without creating unnecessary fear. Here's how to educate kids effectively.",
@@ -368,7 +378,7 @@ const blogData: Record<string, {
     author: "Landscape Expert Team",
     date: "Dec 8, 2025",
     readTime: "7 min read",
-    image: "🌳",
+    image: snakePrevention,
     likes: 198,
     content: [
       "Your garden can be both beautiful and snake-resistant. Here are practical landscaping tips to make your outdoor spaces less attractive to snakes.",
@@ -438,7 +448,7 @@ const blogData: Record<string, {
     author: "Dr. Rajesh Gokhale",
     date: "Dec 5, 2025",
     readTime: "8 min read",
-    image: "❓",
+    image: snakeConservation,
     likes: 356,
     content: [
       "India has a rich mythology around snakes, but many beliefs are scientifically incorrect. Let's separate myths from facts to better understand these creatures.",
@@ -578,8 +588,12 @@ const BlogDetail = () => {
         <section className="py-8 bg-card">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
-              <div className="h-64 bg-muted rounded-3xl flex items-center justify-center">
-                <span className="text-9xl">{blog.image}</span>
+              <div className="h-80 md:h-96 rounded-3xl overflow-hidden">
+                <img 
+                  src={blog.image} 
+                  alt={blog.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
