@@ -587,12 +587,12 @@ const BlogDetail = () => {
         {/* Featured Image */}
         <section className="py-8 bg-card">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="h-80 md:h-96 rounded-3xl overflow-hidden">
+            <div className="max-w-4xl mx-auto">
+              <div className="aspect-[16/9] rounded-3xl overflow-hidden shadow-medium">
                 <img 
                   src={blog.image} 
                   alt={blog.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
             </div>
