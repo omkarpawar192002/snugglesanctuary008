@@ -6,6 +6,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -189,19 +190,41 @@ const FeaturedPets = ({ searchQuery = "", selectedSpecies = "All" }: FeaturedPet
 
   const handleSubmitApplication = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user || !selectedPet) return;
+    
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setAdoptDialogOpen(false);
-    setApplicationData({ name: "", email: "", phone: "", address: "", reason: "" });
-    
-    toast({
-      title: "Application Submitted! 🎉",
-      description: `Your adoption application for ${selectedPet?.name} has been received. We'll contact you within 24-48 hours.`,
-    });
+    try {
+      const { error } = await supabase.from("adoption_requests").insert({
+        user_id: user.id,
+        pet_id: selectedPet.id,
+        pet_name: selectedPet.name,
+        pet_image: selectedPet.image,
+        applicant_name: applicationData.name,
+        applicant_email: applicationData.email,
+        applicant_phone: applicationData.phone,
+        message: `Address: ${applicationData.address}\n\nReason: ${applicationData.reason}`,
+        status: "pending",
+      });
+
+      if (error) throw error;
+
+      setAdoptDialogOpen(false);
+      setApplicationData({ name: "", email: "", phone: "", address: "", reason: "" });
+      
+      toast({
+        title: "Application Submitted! 🎉",
+        description: `Your adoption application for ${selectedPet?.name} has been received. We'll contact you within 24-48 hours.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit application. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
