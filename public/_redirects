@@ -1,0 +1,8 @@
+# Netlify SPA Redirects
+# This file handles client-side routing for React Router
+
+# API routes (if any) - pass through
+# /api/*  /api/:splat  200
+
+# All other routes -> index.html for SPA
+/*    /index.html   200
