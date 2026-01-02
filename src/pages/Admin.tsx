@@ -169,12 +169,38 @@ const Admin = () => {
         supabase.from('clinic_appointments').select('*').order('created_at', { ascending: false })
       ]);
 
-      if (adoptionRes.data) setAdoptionRequests(adoptionRes.data);
-      if (volunteerRes.data) setVolunteerRequests(volunteerRes.data);
-      if (subscriptionRes.data) setSubscriptions(subscriptionRes.data);
-      if (appointmentsRes.data) setClinicAppointments(appointmentsRes.data);
+      console.log('Adoption requests:', adoptionRes);
+      console.log('Volunteer requests:', volunteerRes);
+      console.log('Subscriptions:', subscriptionRes);
+      console.log('Appointments:', appointmentsRes);
+
+      if (adoptionRes.error) {
+        console.error('Error fetching adoption requests:', adoptionRes.error);
+        toast({ title: "Error", description: "Failed to fetch adoption requests", variant: "destructive" });
+      } else {
+        setAdoptionRequests(adoptionRes.data || []);
+      }
+
+      if (volunteerRes.error) {
+        console.error('Error fetching volunteer requests:', volunteerRes.error);
+      } else {
+        setVolunteerRequests(volunteerRes.data || []);
+      }
+
+      if (subscriptionRes.error) {
+        console.error('Error fetching subscriptions:', subscriptionRes.error);
+      } else {
+        setSubscriptions(subscriptionRes.data || []);
+      }
+
+      if (appointmentsRes.error) {
+        console.error('Error fetching appointments:', appointmentsRes.error);
+      } else {
+        setClinicAppointments(appointmentsRes.data || []);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
+      toast({ title: "Error", description: "Failed to fetch data", variant: "destructive" });
     } finally {
       setLoadingData(false);
     }
